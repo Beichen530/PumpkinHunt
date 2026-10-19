@@ -41,7 +41,7 @@ public class Sprite {
                 && mouseY >= y && mouseY <= y + height;
     }
 
-    protected void changePicture(String imageFileName) {
+    public void changePicture(String imageFileName) {
         image = loadImage(imageFileName);
     }
 

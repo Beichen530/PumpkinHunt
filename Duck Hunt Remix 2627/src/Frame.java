@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +9,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import loopsPractice2.LoopsPractice2;
+import java.util.LinkedList;
+import java.util.Random;
 
 /**
  * STUDENT FILE: object declarations.
@@ -21,21 +25,36 @@ public class Frame extends JPanel implements ActionListener {
     // ===============================
     // STUDENT OBJECTS
     // ===============================
-    private Duck duck1 = new Duck(150, 120);
-
-    // STEP 6: Uncomment these one at a time, or create your own Ducks.
-     private Duck duck2 = new Duck(380, 180);
-    // private Duck duck3 = new Duck(620, 100);
+    public static int duckamount = 15;
+    
+    private Random rand = new Random(); 
+    private LinkedList<Duck> ducks = new LinkedList<Duck>();
 
     private Dog dogObject = new Dog();
     private GameWorld world = new GameWorld(dogObject);
+    
+    private Timer timer;
+    
+    Music hitSound = new Music("Hit (1).wav", false);
+    Music bgSound = new Music("BG (1).wav", false);
+    Music shotSound = new Music("Shot (1).wav", true);
+
 
     public Frame() {
         // STEP 6: Add each Duck to the world after declaring it above.
-        world.addDuck(duck1);
-         world.addDuck(duck2);
-        // world.addDuck(duck3);
+    	bgSound.loop();
+    	
+    	for (int i = 0; i < duckamount; i++) {
+    		int x = 0 + rand.nextInt(800);
+    		int y = 0 + rand.nextInt(GameWorld.GROUND_TOP - 50);
 
+    	
+    		ducks.add(new Duck(x,y));
+    	}
+    	
+    	for (int i = 0; i < duckamount; i++) {
+    		world.addDuck(ducks.get(i));
+    	}
         world.start();
 
         setPreferredSize(new Dimension(GameWorld.WORLD_WIDTH, GameWorld.WORLD_HEIGHT));
@@ -43,10 +62,11 @@ public class Frame extends JPanel implements ActionListener {
             @Override
             public void mousePressed(MouseEvent event) {
                 world.handleClick(event.getX(), event.getY());
+                shotSound.play();
             }
         });
 
-        JFrame window = new JFrame("Duck Hunt Remix");
+        JFrame window = new JFrame("Pumpkin Hunt");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setContentPane(this);
@@ -54,7 +74,7 @@ public class Frame extends JPanel implements ActionListener {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        Timer timer = new Timer(16, this);
+        timer = new Timer(16, this);
         timer.start();
     }
 
@@ -66,8 +86,13 @@ public class Frame extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        world.update();
-        repaint();
+    	if (!world.punish) {
+    		world.update();
+    		repaint();
+    	} else {
+    		timer.stop();
+    		LoopsPractice2.main(null);
+    	}
     }
 
     public static void main(String[] args) {

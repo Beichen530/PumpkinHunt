@@ -5,8 +5,8 @@
  * Dog move toward that location and report when the retrieval is complete.
  */
 public class Dog extends Sprite {
-    private static final int DOG_WIDTH = 69;
-    private static final int DOG_HEIGHT = 94;
+    private static final int DOG_WIDTH = 138;
+    private static final int DOG_HEIGHT = 188;
 
     // STUDENT SETTING
     private int speed = 6;
@@ -16,9 +16,10 @@ public class Dog extends Sprite {
     private int targetX;
     private boolean retrieving = false;
     private boolean retrievedDuck = false;
+    Music winSound = new Music("win.wav", false);
 
     public Dog() {
-        super("dog1.png", 40, GameWorld.GROUND_TOP - DOG_HEIGHT,
+        super("happyFarmer.png", 40, GameWorld.GROUND_TOP - DOG_HEIGHT+170,
                 DOG_WIDTH, DOG_HEIGHT);
 
         homeX = x;
@@ -31,7 +32,7 @@ public class Dog extends Sprite {
             targetX = duckX;
             retrieving = true;
             retrievedDuck = false;
-            changePicture("dog2.png");
+            changePicture("happyFarmer.png");
         }
     }
 
@@ -50,7 +51,21 @@ public class Dog extends Sprite {
         }
 
         // Write your Dog movement code here.
-    }
+        if (retrieving == true && retrievedDuck == false) {
+	        if (x < targetX) {
+	        	x += 15;
+	        }
+	        if (x > targetX) {
+	        	x -= 20;
+	        }
+	        if (Math.abs(targetX - x) < 90) {
+	        	retrievedDuck = true;
+	        	retrieving = false;
+	        	winSound.play();
+	        }
+        }
+        }
+    
 
     public boolean isRetrieving() {
         return retrieving;
@@ -65,6 +80,6 @@ public class Dog extends Sprite {
         setLocation(homeX, homeY);
         retrieving = false;
         retrievedDuck = false;
-        changePicture("dog1.png");
+        changePicture("happyFarmer.png");
     }
 }
